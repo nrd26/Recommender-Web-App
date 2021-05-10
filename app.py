@@ -15,7 +15,7 @@ def predict():
     print(title)
     prediction = movie_predict(title['movie_name'])
 
-    return render_template('home.html', prediction_text="{}".format(prediction[0:10]))
+    return render_template('home.html', prediction_text=prediction)
 
 
 if __name__ == '__main__':

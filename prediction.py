@@ -25,7 +25,7 @@ def movie_predict(name):
 
     similarity_scores = sorted(similarity, key = lambda x: x[1], reverse = True)
 
-    similarity_scores = similarity_scores[1:21]    # ignore first because it is the same movie
+    similarity_scores = similarity_scores[1:11]    # ignore first because it is the same movie
 
     movie_indices = [i[0] for i in similarity_scores]
     
@@ -34,5 +34,5 @@ def movie_predict(name):
     ul = ""
     for x in movies:
         ul += "<li>"+str(x)+"</li>"
-        
+
     return ul
