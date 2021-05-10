@@ -19,7 +19,7 @@ def movie_predict(name):
     try:
         idx = indices[name]
     except KeyError:
-        return 'Movie not in dataset'
+        return ['Movie not in dataset']
 
     similarity = list(enumerate(cos[idx]))
 
@@ -30,9 +30,10 @@ def movie_predict(name):
     movie_indices = [i[0] for i in similarity_scores]
     
     movies = [x for x in df['title'].iloc[movie_indices]]
+
+    ul = "<ul>"
+    for x in movies:
+        ul += "<li>"+str(x)+"</li>"
     
-    return movies
-
-
-
-
+    ul += "</ul>"
+    return ul
