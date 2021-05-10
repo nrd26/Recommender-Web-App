@@ -31,9 +31,8 @@ def movie_predict(name):
     
     movies = [x for x in df['title'].iloc[movie_indices]]
 
-    ul = "<ul>"
+    ul = ""
     for x in movies:
         ul += "<li>"+str(x)+"</li>"
-    
-    ul += "</ul>"
+        
     return ul
