@@ -1,9 +1,7 @@
 import pandas as pd
 import numpy as np
-# from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-
-from model import TfidfVectorizer
 
 def movie_predict(name):
     df1 = pd.read_csv('dataset/TMDB5000/tmdb_5000_credits.csv')
@@ -32,15 +30,5 @@ def movie_predict(name):
     movie_indices = [i[0] for i in similarity_scores]
     
     movies = [x for x in df['title'].iloc[movie_indices]]
-    
-    # result = {}
-    # i = 0
-    # for x in movies:
-    #     result[i] = x
-    #     i = i+1
-
-    # ul = ""
-    # for x in movies:
-    #     ul += str(x+"\n")
 
     return movies
