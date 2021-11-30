@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+
+from model import TfidfVectorizer
 
 def movie_predict(name):
     df1 = pd.read_csv('dataset/TMDB5000/tmdb_5000_credits.csv')
