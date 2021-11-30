@@ -12,10 +12,7 @@
 * { -webkit-box-sizing:border-box; -moz-box-sizing:border-box; -ms-box-sizing:border-box; -o-box-sizing:border-box; box-sizing:border-box; } */
 
 html { width: 100%; height:100%; overflow:hidden; }
-ul {
-	color: #333;
-	margin-top: 360px;
-}
+
 
 .btn{
 	background-color: #333;
@@ -34,10 +31,10 @@ body {
 	font-size: 18px;
 	text-align:center;
 	letter-spacing:1.2px;
-	/* background-image: linear-gradient(to bottom, #a6c0fe, #f68084); */
-	background: url(bg.png);
-    background-attachment: fixed;
-    background-size: cover;
+	background-image: linear-gradient(to bottom, #a6c0fe, #f68084);
+	/* background: url(bg.png); */
+    /* background-attachment: fixed; */
+    /* background-size: cover; */
 	/* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3E1D6D', endColorstr='#092756',GradientType=1 ); */
 
 }
@@ -74,3 +71,15 @@ input {
 	transition: box-shadow .5s ease;
 }
 input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgba(255,255,255,0.2); }
+
+.result {
+	color: #333;
+	margin-left: 500px;
+	margin-right: 500px;
+	
+}
+h1{
+	align-self: center;
+	margin-top: 100px;
+	
+}
