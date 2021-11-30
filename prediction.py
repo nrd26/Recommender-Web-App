@@ -25,14 +25,20 @@ def movie_predict(name):
 
     similarity_scores = sorted(similarity, key = lambda x: x[1], reverse = True)
 
-    similarity_scores = similarity_scores[1:11]    # ignore first because it is the same movie
+    similarity_scores = similarity_scores[1:6]    # ignore first because it is the same movie
 
     movie_indices = [i[0] for i in similarity_scores]
     
     movies = [x for x in df['title'].iloc[movie_indices]]
+    
+    # result = {}
+    # i = 0
+    # for x in movies:
+    #     result[i] = x
+    #     i = i+1
 
-    ul = ""
-    for x in movies:
-        ul += "<li>"+str(x)+"</li>"
+    # ul = ""
+    # for x in movies:
+    #     ul += str(x+"\n")
 
-    return ul
+    return movies

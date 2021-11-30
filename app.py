@@ -14,8 +14,9 @@ def predict():
     title = request.form.to_dict()
     print(title)
     prediction = movie_predict(title['movie_name'])
+    return render_template('result.html', result = prediction)
 
-    return render_template('home.html', prediction_text=prediction)
+    
 
 
 if __name__ == '__main__':
