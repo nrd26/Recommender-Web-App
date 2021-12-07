@@ -19,16 +19,16 @@
 
 <body>
  <div class="login">
-	<h1>Movie Recommender</h1>
+	<h1>Predict</h1>
 
      <!-- Main Input For Receiving Query to our ML -->
     <form action="{{ url_for('predict')}}"method="post">
 
         <input type="text" id="movie_name" name="movie_name" placeholder="Movie name" required="required">
-
+        <br><br>
        
 
-        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+        <button type="submit" class="login2">Predict</button>
     </form>
  </div>
 </body>

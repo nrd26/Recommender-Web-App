@@ -1,34 +1,98 @@
 import pandas as pd
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
+import math
+import difflib 
 
-def movie_predict(name):
-    df1 = pd.read_csv('dataset/TMDB5000/tmdb_5000_credits.csv')
-    df2 = pd.read_csv('dataset/TMDB5000/tmdb_5000_movies.csv')
+#stop_words.txt contains stop words
+fhand = open('stop_words.txt','r')
+stopwords_list = (fhand.read()).split()
+fhand.close()
+df = pd.read_excel('dataset/dataset.xlsx') #read from excel
+strength = 10 #quality of predictions, directly proportional to processing time
 
-    df = df2.merge(df1)
-    df['overview'] = df['overview'].fillna('')
+#If a title absent from db is entered, this function returns the closest match
+def find_closest(inpt_title):
+    title_list = df['title'].tolist()
+    for i in range(0,len(title_list)):
+        title_list[i] = str(title_list[i])
+    title = (difflib.get_close_matches(str(inpt_title),list(title_list)))[0]
+    return title
 
-    tf = TfidfVectorizer(analyzer='word',ngram_range=(1, 2),min_df=0, stop_words='english')
-    tfidf_matrix = tf.fit_transform(df['overview'])
-    cos = linear_kernel(tfidf_matrix, tfidf_matrix)
-    indices = pd.Series(df2.index, index=df2['title']).drop_duplicates()   # map for indices to movies
+#Removes stopwords from the passed text
+def remove_stopwords(text_list):
+    list_output = list()
+    for i in text_list:
+        if i not in stopwords_list:
+            list_output.append(i.strip(' '))
+    return list_output[:strength]
 
-
+#Returns the movie-id for the movie_name
+def get_movie_id(movie_name):
     try:
-        idx = indices[name]
-    except KeyError:
-        return ['Movie not in dataset']
+        movie_id = int((df['movie_id'][df['title']==movie_name]))
+    except:
+        movie_id = -1
+    return movie_id
 
-    similarity = list(enumerate(cos[idx]))
+#Returns all the non-stop words
+def good_words(movie_id):
+    string = None
+    for i in (df['meta_data'][df['movie_id']==movie_id]):
+        string = i
+    good_words = remove_stopwords(string.split())
+    good_words = set(good_words)
+    good_words = list(good_words)
+    return good_words
 
-    similarity_scores = sorted(similarity, key = lambda x: x[1], reverse = True)
+def IDF_helper(x,good_word,idf_dict):
+    if good_word in str(x):
+        idf_dict[good_word] = idf_dict.get(good_word,0)+1
 
-    similarity_scores = similarity_scores[1:6]    # ignore first because it is the same movie
+#Calculates the inverse document frequency
+def IDF(idf_dict,good_words_list):
+    for word in good_words_list:
+        df['meta_data'].apply(IDF_helper,args=[word,idf_dict])
+    for i,j in idf_dict.items():
+        idf_dict[i]=math.log(df.shape[0]/j,10)
 
-    movie_indices = [i[0] for i in similarity_scores]
+
+#Calculates term frequency and multiplies it with idf
+def TF_helper(x,good_word,tf_dict,idf_dict):
+    xlist = x.split()
+    tf_dict[xlist[0]] = tf_dict.get(xlist[0],0) + (x.count(good_word)/len(xlist))*(idf_dict.get(good_word,0))
+
+#Calculates the Term frequency 
+def TF(tf_dict,good_words_list,idf_dict):
+    for word in good_words_list:
+        df['meta_data'].apply(TF_helper,args=[word,tf_dict,idf_dict])
+
+#Returns a list of similar movies, returns -1 if unable to find similar movies
+def movie_predict(movie_name):
+    movie_name = movie_name.lower()
+    idf_dict = dict()
+    tf_dict = dict()
+    tf_idf_list = list()
+    movie_id = get_movie_id(movie_name)
+    if movie_id == -1:
+        try:
+            movie_name = find_closest(movie_name)
+            movie_id = get_movie_id(movie_name)
+        except:
+            return -1
+        
+    good_words_list = good_words(movie_id)  #good words are words other than stop words     
+    IDF(idf_dict,good_words_list)
+    TF(tf_dict,good_words_list,idf_dict)
+    tup_list = list()
+    for i,j in tf_dict.items(): #j is movie_id and i is the tf*idf
+        tup_list.append((j,i))
+    tup_list.sort(reverse=True) #Sort in decreasing order of tf*idf
+    movie_list = list()
+    for i,j in tup_list[:10]:   #Get top 10 results
+        for i in (df['title'][df['movie_id']==float(j)]):
+            s_temp = str(i).strip(' ')
+            if s_temp != '' and s_temp != 'nan' and s_temp != ' ' and s_temp!=movie_name:
+                movie_list.append(i)
+    return movie_list[:5] #Return 5 similar movies
+
     
-    movies = [x for x in df['title'].iloc[movie_indices]]
 
-    return movies
