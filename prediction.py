@@ -27,7 +27,7 @@ def remove_stopwords(text_list):
             list_append.append(i.strip(' '))
     rand_list = list()
     for i in range(0,strength):
-        rand_index = random.randrange(len(list_append)-100,len(list_append)-20)
+        rand_index = random.randrange(max(0,len(list_append)-100),len(list_append))
         rand_list.append(list_append[rand_index])
     return list_append[:strength] + rand_list 
 
